@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Create a Terraform plan
-                    sh 'terraform plan -out=tfplan'
+                    sh 'terraform plan '
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     // Apply Terraform changes
-                    sh 'terraform apply "tfplan" '
+                    sh 'terraform apply --auto-approve '
                 }
             }
         }
