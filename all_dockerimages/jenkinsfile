@@ -28,6 +28,7 @@ pipeline {
                 sudo docker build -t ot-ms-attendance -f Dockerfile .
                 sudo  docker tag ot-ms-attendance  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:attendance
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:attendance
+                docker image prune -a --force
                 '''
             }
         }
@@ -37,6 +38,7 @@ pipeline {
                 sudo docker build -t ot-ms-elasticsearch -f Dockerfile .
                 sudo  docker tag ot-ms-elasticsearch  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
+                docker image prune -a --force
                 '''
             }
         }
@@ -46,6 +48,7 @@ pipeline {
                 sudo docker build -t ot-ms-employee -f Dockerfile .
                 sudo  docker tag ot-ms-employee  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:employee
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:employee
+                docker image prune -a --force
                 '''
             }
         }
@@ -64,6 +67,7 @@ pipeline {
                 sudo docker build -t ot-ms-notification -f Dockerfile .
                 sudo  docker tag ot-ms-notification  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:notification
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:notification
+                docker image prune -a --force
                 '''
             }
         }
@@ -73,6 +77,8 @@ pipeline {
                 sudo docker build -t ot-ms-salary -f Dockerfile .
                 sudo  docker tag ot-ms-salary  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:salary
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:salary
+                docker image prune -a --force
+
                 '''
             }
         }
@@ -82,6 +88,7 @@ pipeline {
                 sudo docker build -t ot-ms-static -f Dockerfile .
                 sudo  docker tag ot-ms-static  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
+                docker image prune -a --force
                 '''
             }
         }
