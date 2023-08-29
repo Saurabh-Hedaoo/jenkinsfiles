@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/tf-infra.git']])   
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                script {
+                    // Initialize Terraform
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                script {
+                    // Create a Terraform plan
+                    sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+        stage('Approval') {
+            steps {
+                script {
+                    // Ask for approval with a "yes" or "no" response
+                    def userInput = input(
+                        message: 'Do you want to apply the Terraform changes? (yes or no)',
+                        parameters: [
+                            [$class: 'ChoiceParameterDefinition', choices: 'yes\nno', description: 'Choose yes or no']
+                        ]
+                    )
+
+                    if (userInput == 'yes') {
+                        echo 'Proceeding with Terraform apply...'
+                    } else {
+                        error('Terraform apply not approved. Aborting...')
+                    }
+                }
+            }
+        }
+        stage('Terraform Apply') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
+            steps {
+                script {
+                    // Apply Terraform changes
+                    sh 'terraform apply "tfplan" '
+                }
+            }
+        }
+    }
+}
