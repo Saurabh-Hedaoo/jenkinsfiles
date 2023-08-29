@@ -9,14 +9,29 @@ pipeline {
     stages {
         stage('gitcheckout') {
             steps {
-               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/ot-ms-kubernetes.git']])
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/ot-ms-kubernetes.git']])
                 }
+        }
+        stage('gitcheckout') {
+            steps {
+            sh '''
+            set -e
+                echo "[ops-main]" > ~/.aws/config
+                echo "region = ${AWS_REGION}" >> ~/.aws/config
+                echo "output = json"  >> ~/.aws/config
+                echo "[ops-main]" > ~/.aws/credentials
+                echo "region = ${AWS_REGION}" >> ~/.aws/credentials
+                echo "output = json" >> ~/.aws/credentials
+                echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+                echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+               '''
+            }
         }
         stage('deploy') {
             steps {
                 sh ''' aws eks update-kubeconfig --name ot-microservice-cluster
-                ls -al
-                cd forntend/
+                ls -al 
+                cd ot-ms-kubernetes/forntend/
                 kubectl apply -f  deployment.yaml
                 kubectl apply -f  service.yaml
                 '''
