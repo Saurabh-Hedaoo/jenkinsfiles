@@ -12,24 +12,6 @@ pipeline {
             checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/ot-ms-kubernetes.git']])
                 }
         }
-        stage('credentials') {
-            steps {
-            sh '''
-            set -e
-                mkdir -p ~/.aws
-                touch ~/.aws/config
-                touch ~/.aws/credentials
-                echo "[ops-main]" > ~/.aws/config
-                echo "region = ${AWS_REGION}" >> ~/.aws/config
-                echo "output = json"  >> ~/.aws/config
-                echo "[ops-main]" > ~/.aws/credentials
-                echo "region = ${AWS_REGION}" >> ~/.aws/credentials
-                echo "output = json" >> ~/.aws/credentials
-                echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
-                echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
-               '''
-            }
-        }
         stage('deploy') {
             steps {
                 sh ''' aws eks update-kubeconfig --name ot-microservice-cluster
