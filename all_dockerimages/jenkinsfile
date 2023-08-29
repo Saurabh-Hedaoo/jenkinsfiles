@@ -84,15 +84,5 @@ pipeline {
                 '''
             }
         }
-        stage('static_build') {
-            steps {
-                sh ''' cd static
-                sudo docker build -t ot-ms-static -f Dockerfile .
-                sudo  docker tag ot-ms-static  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
-                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
-                sudo docker image prune -a --force
-                '''
-            }
-        }
     }
 }
