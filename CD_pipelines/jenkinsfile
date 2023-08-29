@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('gitcheckout') {
+            steps {
+               sh '''rm -rf *
+               git clone https://github.com/Pritam-Khergade/ot-ms-kubernetes.git
+               '''    
+                }
+        }
+        stage('deploy') {
+            steps {
+                sh ''' cd ot-ms-kubernetes/forntend/
+                kubectl apply -f  deployment.yaml
+                kubectl apply -f  service.yaml
+                '''
+            }
+        }
+        
+    }
+}
