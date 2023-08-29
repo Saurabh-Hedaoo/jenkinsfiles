@@ -18,25 +18,6 @@ pipeline {
                 }
             }
         }
-        stage('Approval') {
-            steps {
-                script {
-                    // Ask for approval with a "yes" or "no" response
-                    def userInput = input(
-                        message: 'Do you want to apply the Terraform changes? (yes or no)',
-                        parameters: [
-                            [$class: 'ChoiceParameterDefinition', choices: 'yes\nno', description: 'Choose yes or no']
-                        ]
-                    )
-
-                    if (userInput == 'yes') {
-                        echo 'Proceeding with Terraform apply...'
-                    } else {
-                        error('Terraform apply not approved. Aborting...')
-                    }
-                }
-            }
-        }
         stage('Terraform Apply') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
