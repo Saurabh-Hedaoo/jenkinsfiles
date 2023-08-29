@@ -1,0 +1,89 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('gitcheckout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/opstree/OT-Microservices.git']])
+            }
+        }
+        stage('erc_login') {
+            steps {
+               sh ' aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 877466132168.dkr.ecr.us-east-1.amazonaws.com'
+            }
+        }
+        
+        stage('fronntend_build') {
+            steps {
+                sh ''' cd frontend
+                sudo docker build -t ot-ms-frontend -f Dockerfile .
+                sudo  docker tag ot-ms-frontend  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:frontend
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:frontend
+                '''
+            }
+        }
+        stage('attendance_build') {
+            steps {
+                sh ''' cd attendance
+                sudo docker build -t ot-ms-attendance -f Dockerfile .
+                sudo  docker tag ot-ms-attendance  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:attendance
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:attendance
+                '''
+            }
+        }
+        stage('elasticsearch_build') {
+            steps {
+                sh ''' cd elasticsearch
+                sudo docker build -t ot-ms-elasticsearch -f Dockerfile .
+                sudo  docker tag ot-ms-elasticsearch  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
+                '''
+            }
+        }
+        stage('employee_build') {
+            steps {
+                sh ''' cd employee
+                sudo docker build -t ot-ms-employee -f Dockerfile .
+                sudo  docker tag ot-ms-employee  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:employee
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:employee
+                '''
+            }
+        }
+        stage('mysql_build') {
+            steps {
+                sh ''' cd mysql
+                sudo docker build -t ot-ms-mysql -f Dockerfile .
+                sudo  docker tag ot-ms-mysql  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:mysql
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:mysql
+                '''
+            }
+        }
+        stage('notification_build') {
+            steps {
+                sh ''' cd notification
+                sudo docker build -t ot-ms-notification -f Dockerfile .
+                sudo  docker tag ot-ms-notification  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:notification
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:notification
+                '''
+            }
+        }
+        stage('salary_build') {
+            steps {
+                sh ''' cd salary
+                sudo docker build -t ot-ms-salary -f Dockerfile .
+                sudo  docker tag ot-ms-salary  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:salary
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:salary
+                '''
+            }
+        }
+        stage('static_build') {
+            steps {
+                sh ''' cd static
+                sudo docker build -t ot-ms-static -f Dockerfile .
+                sudo  docker tag ot-ms-static  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:static
+                '''
+            }
+        }
+    }
+}
