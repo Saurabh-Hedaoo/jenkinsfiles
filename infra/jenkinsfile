@@ -14,18 +14,9 @@ pipeline {
                     sh ''' cd terrafrom
                     ls -al
                     terraform init
+                    terraform plan
+                    terraform apply -auto-approve
                     '''
-                }
-            }
-        }
-        stage('Terraform Apply') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
-            steps {
-                script {
-                    // Apply Terraform changes
-                    sh 'terraform apply --auto-approve '
                 }
             }
         }
