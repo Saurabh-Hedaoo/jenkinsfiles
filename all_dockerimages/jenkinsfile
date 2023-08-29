@@ -19,7 +19,7 @@ pipeline {
                 sudo docker build -t ot-ms-frontend -f Dockerfile .
                 sudo  docker tag ot-ms-frontend  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:frontend
                 sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:frontend
-                docker image prune -a --force
+                sudo docker image prune -a --force
                 '''
             }
         }
