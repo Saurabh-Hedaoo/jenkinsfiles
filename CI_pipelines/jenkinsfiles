@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environment {
+        IMG = 'dockerfrontendimage'
+    }
+    stages {
+        stage('gitcheckout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/opstree/OT-Microservices.git']])
+            }
+        }
+        stage('fronntend_build') {
+            steps {
+                sh ''' cd frontend
+                sudo docker build -t ot-ms -f Dockerfile .
+                '''
+            }
+        }
+        stage('image_push') {
+            steps {
+                sh ''' aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 877466132168.dkr.ecr.us-east-1.amazonaws.com
+                sudo  docker tag ot-ms:latest 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:${IMG}
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:${IMG}
+                
+                '''
+            }
+        }
+    }
+}
