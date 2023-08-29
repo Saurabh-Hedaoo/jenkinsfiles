@@ -16,6 +16,7 @@ pipeline {
             steps {
             sh '''
             set -e
+                mkdir -p .aws
                 echo "[ops-main]" > ~/.aws/config
                 echo "region = ${AWS_REGION}" >> ~/.aws/config
                 echo "output = json"  >> ~/.aws/config
