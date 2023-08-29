@@ -15,6 +15,7 @@ pipeline {
         stage('deploy') {
             steps {
                 sh ''' aws eks update-kubeconfig --name ot-microservice-cluster
+                ls -al
                 cd ot-ms-kubernetes/forntend/
                 kubectl apply -f  deployment.yaml
                 kubectl apply -f  service.yaml
