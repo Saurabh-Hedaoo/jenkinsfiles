@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    stages {
+        stage('gitcheckout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/opstree/OT-Microservices.git']])
+            }
+        }
+        stage('mysql_build') {
+            steps {
+                sh ''' cd mysql
+                sudo docker build -t ot-ms-mysql -f Dockerfile .
+                sudo  docker tag ot-ms-mysql  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:mysql
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:mysql
+                '''
+            }
+        }
+        stage('deploy-checkout') {
+            steps {
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/ot-ms-kubernetes.git']])
+                }
+        }
+        stage('deploy') {
+            steps {
+                sh ''' aws eks update-kubeconfig --name ot-microservice-cluster
+                ls -al 
+                cd mysql/
+                kubectl apply -f  deployment.yaml
+                kubectl apply -f  service.yaml
+                '''
+            }
+        }
+    }
+}
