@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    stages {
+        stage('gitcheckout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/opstree/OT-Microservices.git']])
+            }
+        }
+        stage('elasticsearch_build') {
+            steps {
+                sh ''' cd elasticsearch
+                sudo docker build -t ot-ms-elasticsearch -f Dockerfile .
+                sudo  docker tag ot-ms-elasticsearch  877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
+                sudo docker push 877466132168.dkr.ecr.us-east-1.amazonaws.com/ot-ms:elasticsearch
+                '''
+            }
+        }
+        stage('deploy-checkout') {
+            steps {
+            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Pritam-Khergade/ot-ms-kubernetes.git']])
+                }
+        }
+        stage('deploy') {
+            steps {
+                sh ''' aws eks update-kubeconfig --name ot-microservice-cluster
+                ls -al 
+                cd elasticsearch/
+                kubectl apply -f  deployment.yaml
+                kubectl apply -f  service.yaml
+                '''
+            }
+        }
+    }
+}
