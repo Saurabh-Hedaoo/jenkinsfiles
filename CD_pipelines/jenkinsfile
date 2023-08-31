@@ -13,7 +13,6 @@ pipeline {
                 ls -al 
                 cd forntend/
                 kubectl apply -f  deployment.yaml
-                kubectl apply -f  service.yaml
                 '''
             }
         }
