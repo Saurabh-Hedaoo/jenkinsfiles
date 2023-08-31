@@ -26,7 +26,6 @@ pipeline {
                 ls -al 
                 cd employee/
                 kubectl apply -f  deploy.yaml
-                kubectl apply -f  service.yaml
                 '''
             }
         }
